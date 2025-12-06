@@ -1,0 +1,19 @@
+[package]
+name = "bitfold-peer"
+description = "Peer state machine for the Bitfold networking library"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[dependencies]
+bitfold-core = { workspace = true }
+bitfold-protocol = { workspace = true }
+rand = { workspace = true }
+tracing = { workspace = true }
+
+[lints]
+workspace = true

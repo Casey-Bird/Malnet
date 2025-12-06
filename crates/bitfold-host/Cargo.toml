@@ -1,0 +1,21 @@
+[package]
+name = "bitfold-host"
+description = "Host and session management for the Bitfold networking library"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[dependencies]
+bitfold-core = { workspace = true }
+bitfold-protocol = { workspace = true }
+bitfold-peer = { workspace = true }
+socket2 = { workspace = true }
+crossbeam-channel = { workspace = true }
+tracing = { workspace = true }
+
+[lints]
+workspace = true

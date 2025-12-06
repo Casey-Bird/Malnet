@@ -1,0 +1,29 @@
+[package]
+name = "bitfold"
+description = "A modern, high-performance reliable UDP networking library inspired by ENet, built with Rust"
+keywords = ["networking", "udp", "enet", "reliable-udp", "game-networking"]
+categories = ["network-programming", "game-development", "asynchronous"]
+readme = "../../README.md"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[lib]
+doctest = false
+
+[dependencies]
+bitfold-core = { workspace = true }
+bitfold-protocol = { workspace = true }
+bitfold-peer = { workspace = true }
+bitfold-host = { workspace = true }
+
+[dev-dependencies]
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,37 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags:
+      - "v*"
+
+jobs:
+  check:
+    name: Verify fmt, clippy, tests, and security
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Install stable (default for lint + tests)
+      - uses: dtolnay/rust-toolchain@stable
+
+      # Install nightly only for rustfmt
+      - name: Install nightly toolchain (for fmt)
+        run: rustup toolchain install nightly --component rustfmt
+
+      - name: Format check (nightly)
+        run: cargo +nightly fmt -- --check
+
+      - name: Lint (clippy, stable)
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests (stable)
+        run: cargo test --locked
+
+      - name: Security audit
+        uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

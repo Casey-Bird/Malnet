@@ -1,0 +1,26 @@
+[package]
+name = "bitfold-protocol"
+description = "Protocol logic for the Bitfold networking library"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[dependencies]
+bitfold-core = { workspace = true }
+byteorder = { workspace = true }
+rand = { workspace = true }
+crc32fast = { workspace = true }
+flate2 = { workspace = true }
+lz4 = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+quickcheck = { workspace = true }
+quickcheck_macros = { workspace = true }
+
+[lints]
+workspace = true
