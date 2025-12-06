@@ -6,7 +6,7 @@
 use std::time::Instant;
 
 use bitfold::{
-    core::config::Config,
+    core::config::{CompressionAlgorithm, Config},
     peer::Peer,
     protocol::{command::ProtocolCommand, packet::OrderingGuarantee},
 };
@@ -633,4 +633,242 @@ fn test_handshake_end_to_end() {
     // Verify data was received
     assert_eq!(packets.len(), 1);
     assert_eq!(packets[0].0.payload(), &[1, 2, 3, 4, 5]);
+}
+
+#[test]
+fn test_handshake_with_compression() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+    config.use_checksums = true;
+    config.compression = CompressionAlgorithm::Lz4;
+
+    let time = Instant::now();
+    let mut client = Peer::new("127.0.0.1:6001".parse().unwrap(), &config, time);
+    let mut server = Peer::new("127.0.0.1:6002".parse().unwrap(), &config, time);
+
+    // Full handshake with compression enabled
+    client.initiate_connect();
+    let connect_bytes = client.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect_bytes, time).unwrap();
+    let verify_bytes = server.encode_queued_commands().unwrap();
+
+    client.process_command_packet(&verify_bytes, time).unwrap();
+
+    // Send compressible data
+    let large_data = vec![0x42u8; 1000]; // Highly compressible
+    client.enqueue_command(ProtocolCommand::SendReliable {
+        channel_id: 0,
+        sequence: 0,
+        ordered: true,
+        data: large_data.clone().into(),
+    });
+
+    let data_bytes = client.encode_queued_commands().unwrap();
+    let result = server.process_command_packet(&data_bytes, time).unwrap();
+    let packets: Vec<_> = result.into_iter().collect();
+
+    assert_eq!(packets.len(), 1);
+    assert_eq!(packets[0].0.payload(), &large_data[..]);
+}
+
+#[test]
+fn test_handshake_multiple_clients() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+
+    let time = Instant::now();
+    let mut server = Peer::new("127.0.0.1:5000".parse().unwrap(), &config, time);
+
+    // Create multiple clients
+    let mut client1 = Peer::new("127.0.0.1:5001".parse().unwrap(), &config, time);
+    let mut client2 = Peer::new("127.0.0.1:5002".parse().unwrap(), &config, time);
+    let mut client3 = Peer::new("127.0.0.1:5003".parse().unwrap(), &config, time);
+
+    // Each client initiates handshake
+    client1.initiate_connect();
+    client2.initiate_connect();
+    client3.initiate_connect();
+
+    // Server processes each Connect
+    let connect1 = client1.encode_queued_commands().unwrap();
+    let connect2 = client2.encode_queued_commands().unwrap();
+    let connect3 = client3.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect1, time).unwrap();
+    let verify1 = server.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect2, time).unwrap();
+    let verify2 = server.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect3, time).unwrap();
+    let verify3 = server.encode_queued_commands().unwrap();
+
+    // Each client completes handshake
+    assert!(client1.process_command_packet(&verify1, time).is_ok());
+    assert!(client2.process_command_packet(&verify2, time).is_ok());
+    assert!(client3.process_command_packet(&verify3, time).is_ok());
+}
+
+#[test]
+fn test_handshake_bidirectional_data() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+    config.use_checksums = true;
+
+    let time = Instant::now();
+    let mut peer1 = Peer::new("127.0.0.1:4001".parse().unwrap(), &config, time);
+    let mut peer2 = Peer::new("127.0.0.1:4002".parse().unwrap(), &config, time);
+
+    // Peer1 initiates handshake
+    peer1.initiate_connect();
+    let connect = peer1.encode_queued_commands().unwrap();
+
+    peer2.process_command_packet(&connect, time).unwrap();
+    let verify = peer2.encode_queued_commands().unwrap();
+
+    peer1.process_command_packet(&verify, time).unwrap();
+
+    // Now both peers can send data to each other
+    // Peer1 -> Peer2
+    peer1.enqueue_command(ProtocolCommand::SendReliable {
+        channel_id: 0,
+        sequence: 0,
+        ordered: true,
+        data: b"Hello from peer1".to_vec().into(),
+    });
+
+    let data1 = peer1.encode_queued_commands().unwrap();
+    let result1 = peer2.process_command_packet(&data1, time).unwrap();
+    let packets1: Vec<_> = result1.into_iter().collect();
+
+    assert_eq!(packets1.len(), 1);
+    assert_eq!(packets1[0].0.payload(), b"Hello from peer1");
+
+    // Peer2 -> Peer1
+    peer2.enqueue_command(ProtocolCommand::SendReliable {
+        channel_id: 0,
+        sequence: 0,
+        ordered: true,
+        data: b"Hello from peer2".to_vec().into(),
+    });
+
+    let data2 = peer2.encode_queued_commands().unwrap();
+    let result2 = peer1.process_command_packet(&data2, time).unwrap();
+    let packets2: Vec<_> = result2.into_iter().collect();
+
+    assert_eq!(packets2.len(), 1);
+    assert_eq!(packets2[0].0.payload(), b"Hello from peer2");
+}
+
+#[test]
+fn test_handshake_with_different_fragment_sizes() {
+    let time = Instant::now();
+
+    // Client with larger fragment size
+    let mut client_config = Config::default();
+    client_config.use_connection_handshake = true;
+    client_config.fragment_size = 1400;
+
+    // Server with smaller fragment size
+    let mut server_config = Config::default();
+    server_config.use_connection_handshake = true;
+    server_config.fragment_size = 1200;
+
+    let mut client = Peer::new("127.0.0.1:3001".parse().unwrap(), &client_config, time);
+    let mut server = Peer::new("127.0.0.1:3002".parse().unwrap(), &server_config, time);
+
+    // Handshake should complete successfully
+    client.initiate_connect();
+    let connect = client.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect, time).unwrap();
+    let verify = server.encode_queued_commands().unwrap();
+
+    client.process_command_packet(&verify, time).unwrap();
+
+    // Both peers should be connected and able to communicate
+    // Each peer uses its own fragment size configuration
+}
+
+#[test]
+fn test_handshake_checksum_protects_connect() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+    config.use_checksums = true;
+
+    let time = Instant::now();
+    let mut client = Peer::new("127.0.0.1:2001".parse().unwrap(), &config, time);
+    let mut server = Peer::new("127.0.0.1:2002".parse().unwrap(), &config, time);
+
+    // Client sends Connect
+    client.initiate_connect();
+    let mut connect = client.encode_queued_commands().unwrap();
+
+    // Corrupt the Connect packet
+    connect[10] ^= 0xFF;
+
+    // Server should reject the corrupted packet
+    let result = server.process_command_packet(&connect, time);
+    assert!(result.is_err(), "Server should reject corrupted Connect packet");
+}
+
+#[test]
+fn test_handshake_checksum_protects_verify_connect() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+    config.use_checksums = true;
+
+    let time = Instant::now();
+    let mut client = Peer::new("127.0.0.1:1001".parse().unwrap(), &config, time);
+    let mut server = Peer::new("127.0.0.1:1002".parse().unwrap(), &config, time);
+
+    // Normal Connect
+    client.initiate_connect();
+    let connect = client.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect, time).unwrap();
+    let mut verify = server.encode_queued_commands().unwrap();
+
+    // Corrupt the VerifyConnect packet
+    verify[15] ^= 0xFF;
+
+    // Client should reject the corrupted packet
+    let result = client.process_command_packet(&verify, time);
+    assert!(result.is_err(), "Client should reject corrupted VerifyConnect packet");
+}
+
+#[test]
+fn test_handshake_without_checksums() {
+    let mut config = Config::default();
+    config.use_connection_handshake = true;
+    config.use_checksums = false; // Checksums disabled
+
+    let time = Instant::now();
+    let mut client = Peer::new("127.0.0.1:10001".parse().unwrap(), &config, time);
+    let mut server = Peer::new("127.0.0.1:10002".parse().unwrap(), &config, time);
+
+    // Handshake should still work without checksums
+    client.initiate_connect();
+    let connect = client.encode_queued_commands().unwrap();
+
+    server.process_command_packet(&connect, time).unwrap();
+    let verify = server.encode_queued_commands().unwrap();
+
+    client.process_command_packet(&verify, time).unwrap();
+
+    // Send data
+    client.enqueue_command(ProtocolCommand::SendReliable {
+        channel_id: 0,
+        sequence: 0,
+        ordered: true,
+        data: b"Test data".to_vec().into(),
+    });
+
+    let data = client.encode_queued_commands().unwrap();
+    let result = server.process_command_packet(&data, time).unwrap();
+    let packets: Vec<_> = result.into_iter().collect();
+
+    assert_eq!(packets.len(), 1);
+    assert_eq!(packets[0].0.payload(), b"Test data");
 }
