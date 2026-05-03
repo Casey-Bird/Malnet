@@ -1,28 +1,28 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/bitfold-core",
-    "crates/bitfold-protocol",
-    "crates/bitfold-peer",
-    "crates/bitfold-host",
-    "crates/bitfold",
+    "crates/malnet-core",
+    "crates/malnet-protocol",
+    "crates/malnet-peer",
+    "crates/malnet-host",
+    "crates/malnet",
 ]
 
 [workspace.package]
-version = "0.1.5"
-authors = ["Russell Wong"]
+version = "0.0.1"
+authors = ["Casey Bird"]
 edition = "2021"
 rust-version = "1.90.0"
 license = "MIT"
-homepage = "https://github.com/russellwmy/bitfold"
-repository = "https://github.com/russellwmy/bitfold"
+homepage = "https://github.com/russellwmy/malnet"
+repository = "https://github.com/russellwmy/malnet"
 
 [workspace.dependencies]
 # Workspace crates
-bitfold-core = { path = "crates/bitfold-core", version = "0.1.5" }
-bitfold-protocol = { path = "crates/bitfold-protocol", version = "0.1.5" }
-bitfold-peer = { path = "crates/bitfold-peer", version = "0.1.5" }
-bitfold-host = { path = "crates/bitfold-host", version = "0.1.5" }
+malnet-core = { path = "crates/malnet-core", version = "0.0.1" }
+malnet-protocol = { path = "crates/malnet-protocol", version = "0.0.1" }
+malnet-peer = { path = "crates/malnet-peer", version = "0.0.1" }
+malnet-host = { path = "crates/malnet-host", version = "0.0.1" }
 
 # External dependencies
 byteorder = "1.5.0"

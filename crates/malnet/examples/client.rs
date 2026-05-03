@@ -15,7 +15,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use bitfold::{Host, Packet, SocketEvent};
+use malnet::{Host, Packet, SocketEvent};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Args: <server_addr> [count] [interval_ms]

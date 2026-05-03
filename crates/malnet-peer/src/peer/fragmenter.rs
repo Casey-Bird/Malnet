@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use bitfold_core::shared::SharedBytes;
-use bitfold_protocol::command::ProtocolCommand;
+use malnet_core::shared::SharedBytes;
+use malnet_protocol::command::ProtocolCommand;
 
 use super::Peer;
 
@@ -19,7 +19,7 @@ impl Peer {
         );
         // Overheads common to any datagram containing exactly one command
         let compression_overhead = match self.config.compression {
-            bitfold_core::config::CompressionAlgorithm::Lz4 => 5, // marker + original size
+            malnet_core::config::CompressionAlgorithm::Lz4 => 5, // marker + original size
             _ => 1,                                               // marker only
         };
         let checksum_overhead = if self.config.use_checksums { 4 } else { 0 };
@@ -145,7 +145,7 @@ impl Peer {
             self.config.receive_buffer_max_size,
         );
         let compression_overhead = match self.config.compression {
-            bitfold_core::config::CompressionAlgorithm::Lz4 => 5,
+            malnet_core::config::CompressionAlgorithm::Lz4 => 5,
             _ => 1,
         };
         let checksum_overhead = if self.config.use_checksums { 4 } else { 0 };
@@ -256,8 +256,8 @@ impl Peer {
 mod tests {
     use std::time::Instant;
 
-    use bitfold_core::config::Config;
-    use bitfold_protocol::{command::ProtocolCommand, packet::DeliveryGuarantee};
+    use malnet_core::config::Config;
+    use malnet_protocol::{command::ProtocolCommand, packet::DeliveryGuarantee};
 
     use super::*;
 

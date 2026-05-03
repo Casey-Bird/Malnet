@@ -5,8 +5,8 @@ use std::{
     time::{Duration, Instant},
 };
 
-use bitfold_core::{config::Config, packet_pool::PacketAllocator};
-use bitfold_protocol::{command::ProtocolCommand, AcknowledgmentHandler, SentPacket};
+use malnet_core::{config::Config, packet_pool::PacketAllocator};
+use malnet_protocol::{command::ProtocolCommand, AcknowledgmentHandler, SentPacket};
 
 use super::{
     bandwidth_throttle::BandwidthThrottle,
@@ -95,7 +95,7 @@ pub struct Peer {
     /// Scratch buffer pool for encoding/compression to reduce heap allocations
     tx_pool: PacketAllocator,
     /// Compression output buffer pool for reducing compression allocations
-    compression_pool: bitfold_core::packet_pool::CompressionBufferPool,
+    compression_pool: malnet_core::packet_pool::CompressionBufferPool,
 
     /// Path MTU discovery manager
     pmtu: PmtuDiscovery,
@@ -148,7 +148,7 @@ impl Peer {
             ),
             statistics: PeerStatistics::default(),
             tx_pool: PacketAllocator::new(config.max_packet_size, 256),
-            compression_pool: bitfold_core::packet_pool::CompressionBufferPool::default(),
+            compression_pool: malnet_core::packet_pool::CompressionBufferPool::default(),
             pmtu: PmtuDiscovery::new(config, time),
         }
     }
@@ -555,7 +555,7 @@ impl fmt::Debug for Peer {
 mod tests {
     use std::time::Instant;
 
-    use bitfold_core::config::Config;
+    use malnet_core::config::Config;
 
     use super::Peer;
     use crate::peer_state::PeerState;
@@ -654,7 +654,7 @@ mod tests {
 
         // Simulate successful reply (this would update low bound)
         if let Some((size, token, _)) = peer.pmtu.outstanding_probe() {
-            let reply = bitfold_protocol::command::ProtocolCommand::PMTUReply { size, token };
+            let reply = malnet_protocol::command::ProtocolCommand::PMTUReply { size, token };
             let _ = peer.process_command(&reply, time).unwrap();
 
             // After successful reply, low bound should be updated

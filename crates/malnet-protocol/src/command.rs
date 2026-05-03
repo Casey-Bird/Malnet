@@ -6,7 +6,7 @@
 
 use std::time::Instant;
 
-use bitfold_core::shared::SharedBytes;
+use malnet_core::shared::SharedBytes;
 
 /// Protocol commands that can be sent between peers.
 ///
@@ -278,7 +278,7 @@ mod tests {
 
     #[test]
     fn test_command_types() {
-        use bitfold_core::shared::SharedBytes;
+        use malnet_core::shared::SharedBytes;
         let cmd = ProtocolCommand::SendReliable {
             channel_id: 0,
             sequence: 1,

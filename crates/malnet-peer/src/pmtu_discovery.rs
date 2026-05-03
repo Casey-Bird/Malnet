@@ -1,6 +1,6 @@
 //! Path MTU (Maximum Transmission Unit) Discovery
 //!
-//! This module implements application-level PMTU discovery for bitfold peers.
+//! This module implements application-level PMTU discovery for malnet peers.
 //! PMTU discovery helps determine the largest packet size that can be transmitted
 //! without fragmentation across the network path between two peers.
 //!
@@ -31,8 +31,8 @@
 
 use std::time::{Duration, Instant};
 
-use bitfold_core::{config::Config, shared::SharedBytes};
-use bitfold_protocol::command::ProtocolCommand;
+use malnet_core::{config::Config, shared::SharedBytes};
+use malnet_protocol::command::ProtocolCommand;
 use rand::RngCore;
 
 /// Manages Path MTU discovery state for a peer connection.
@@ -152,7 +152,7 @@ impl PmtuDiscovery {
         // Total datagram size = static_overhead (packet-level) + per-command length prefix
         //                      + PMTUProbe header (type + size + token + payload_len) + payload_len
         let compression_overhead = match self.config.compression {
-            bitfold_core::config::CompressionAlgorithm::Lz4 => 5, // 1 marker + 4 original size
+            malnet_core::config::CompressionAlgorithm::Lz4 => 5, // 1 marker + 4 original size
             _ => 1,                                               // 1 marker for None/Zlib
         } as u16;
         let checksum_overhead = if self.config.use_checksums { 4 } else { 0 } as u16;

@@ -7,7 +7,7 @@
 
 use std::net::SocketAddr;
 
-use bitfold_protocol::packet::Packet;
+use malnet_protocol::packet::Packet;
 
 /// Actions that connections can request from the runtime.
 /// Used by the Connection trait to return instructions to the connection manager.

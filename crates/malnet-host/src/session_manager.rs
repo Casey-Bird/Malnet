@@ -5,7 +5,7 @@ use std::{
     time::Instant,
 };
 
-use bitfold_core::{
+use malnet_core::{
     config::Config,
     interceptor::{Interceptor, NoOpInterceptor},
     packet_pool::PacketAllocator,

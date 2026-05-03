@@ -11,7 +11,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use bitfold::{Config, Host, Packet, SocketEvent};
+use malnet::{Config, Host, Packet, SocketEvent};
 
 fn parse_bind_addr() -> Option<SocketAddr> {
     let mut args = env::args().skip(1);

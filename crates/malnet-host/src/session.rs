@@ -1,6 +1,6 @@
 use std::{fmt::Debug, net::SocketAddr, time::Instant};
 
-use bitfold_core::config::Config;
+use malnet_core::config::Config;
 
 use super::event_types::Action;
 

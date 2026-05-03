@@ -1,5 +1,5 @@
 [package]
-name = "bitfold-protocol"
+name = "malnet-protocol"
 description = "Protocol logic for the Bitfold networking library"
 version.workspace = true
 authors.workspace = true
@@ -10,7 +10,7 @@ homepage.workspace = true
 repository.workspace = true
 
 [dependencies]
-bitfold-core = { workspace = true }
+malnet-core = { workspace = true }
 byteorder = { workspace = true }
 rand = { workspace = true }
 crc32fast = { workspace = true }

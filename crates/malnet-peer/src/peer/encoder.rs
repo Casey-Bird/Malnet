@@ -1,4 +1,4 @@
-use bitfold_protocol::{
+use malnet_protocol::{
     command::CommandPacket,
     command_codec::{self, CommandEncoder},
 };
@@ -65,7 +65,7 @@ impl Peer {
         // actually test larger datagram sizes. Still cap to receive buffer size.
         let first_is_pmtu_probe = matches!(
             self.command_queue.iter().next(),
-            Some(bitfold_protocol::command::ProtocolCommand::PMTUProbe { .. })
+            Some(malnet_protocol::command::ProtocolCommand::PMTUProbe { .. })
         );
         let max_size =
             if first_is_pmtu_probe { self.config.receive_buffer_max_size } else { max_size };
@@ -76,7 +76,7 @@ impl Peer {
         // - compression marker/header (1 byte; LZ4 adds extra 4 bytes to store original size)
         // - optional checksum (4 bytes)
         let compression_overhead = match self.config.compression {
-            bitfold_core::config::CompressionAlgorithm::Lz4 => 5, // 1 marker + 4 original size
+            malnet_core::config::CompressionAlgorithm::Lz4 => 5, // 1 marker + 4 original size
             _ => 1,                                               // 1 marker for None/Zlib
         };
         let checksum_overhead = if self.config.use_checksums { 4 } else { 0 };
@@ -89,7 +89,7 @@ impl Peer {
         // Pre-encode commands individually to know precise sizes
         let mut per_command_sizes: Vec<usize> = Vec::new();
         for cmd in self.command_queue.iter() {
-            let encoded = bitfold_protocol::command_codec::CommandEncoder::encode_command(cmd)?;
+            let encoded = malnet_protocol::command_codec::CommandEncoder::encode_command(cmd)?;
             let cmd_total = 2 /* length prefix */ + encoded.len();
 
             // Check if adding this command would exceed limit (including trailing overhead)
@@ -109,7 +109,7 @@ impl Peer {
                 // Don't warn for PMTU probes - they're expected to exceed normal MTU
                 if !first_is_pmtu_probe {
                     let encoded =
-                        bitfold_protocol::command_codec::CommandEncoder::encode_command(first_cmd)?;
+                        malnet_protocol::command_codec::CommandEncoder::encode_command(first_cmd)?;
                     let cmd_size = 2 + encoded.len();
                     let total_with_overhead = static_overhead + cmd_size;
 
@@ -139,7 +139,7 @@ impl Peer {
         // Encode into pooled scratch buffer
         let mut scratch = self.tx_pool.allocate();
         scratch.clear();
-        bitfold_protocol::command_codec::CommandEncoder::encode_packet_into(&mut scratch, &packet)?;
+        malnet_protocol::command_codec::CommandEncoder::encode_packet_into(&mut scratch, &packet)?;
 
         // Apply compression using pooled buffer
         let compression_buffer = self.compression_pool.acquire();
@@ -183,8 +183,8 @@ impl Peer {
 mod tests {
     use std::time::Instant;
 
-    use bitfold_core::config::{CompressionAlgorithm, Config};
-    use bitfold_protocol::command::ProtocolCommand;
+    use malnet_core::config::{CompressionAlgorithm, Config};
+    use malnet_protocol::command::ProtocolCommand;
 
     use super::*;
 
@@ -419,7 +419,7 @@ mod tests {
     fn test_mtu_boundary_calculation() {
         let mut config = Config::default();
         config.use_checksums = false;
-        config.compression = bitfold_core::config::CompressionAlgorithm::None;
+        config.compression = malnet_core::config::CompressionAlgorithm::None;
         let mut peer = Peer::new(get_fake_addr(), &config, Instant::now());
 
         // Calculate exact payload size that should fit in 1440 bytes MTU
@@ -457,7 +457,7 @@ mod tests {
     fn test_mtu_boundary_too_large() {
         let mut config = Config::default();
         config.use_checksums = false;
-        config.compression = bitfold_core::config::CompressionAlgorithm::None;
+        config.compression = malnet_core::config::CompressionAlgorithm::None;
         let mut peer = Peer::new(get_fake_addr(), &config, Instant::now());
 
         // Try to enqueue a command that's 1 byte too large

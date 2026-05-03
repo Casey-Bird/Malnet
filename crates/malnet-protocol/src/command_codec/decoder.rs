@@ -6,7 +6,7 @@
 
 use std::io::{self, Cursor, Read};
 
-use bitfold_core::shared::SharedBytes;
+use malnet_core::shared::SharedBytes;
 use byteorder::{BigEndian, ReadBytesExt};
 
 use super::super::command::{CommandPacket, ProtocolCommand};

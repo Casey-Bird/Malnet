@@ -1,8 +1,8 @@
 use std::{net::SocketAddr, time::Instant};
 
-use bitfold_core::error::ErrorKind;
-use bitfold_peer::{Peer, PeerState};
-use bitfold_protocol::packet::{DeliveryGuarantee, OrderingGuarantee, Packet};
+use malnet_core::error::ErrorKind;
+use malnet_peer::{Peer, PeerState};
+use malnet_protocol::packet::{DeliveryGuarantee, OrderingGuarantee, Packet};
 use tracing::error;
 
 use super::{
@@ -36,7 +36,7 @@ impl Session for Peer {
     type ReceiveEvent = SocketEvent;
 
     fn create_session(
-        config: &bitfold_core::config::Config,
+        config: &malnet_core::config::Config,
         address: SocketAddr,
         time: Instant,
     ) -> Peer {
@@ -129,7 +129,7 @@ impl Session for Peer {
                 self.enqueue_reliable_data(channel_id, event.payload_arc(), ordered);
             }
             DeliveryGuarantee::Unreliable => {
-                use bitfold_protocol::packet::OrderingGuarantee;
+                use malnet_protocol::packet::OrderingGuarantee;
 
                 match ordering {
                     OrderingGuarantee::Unsequenced => {
@@ -140,7 +140,7 @@ impl Session for Peer {
                             self.config().receive_buffer_max_size,
                         );
                         let compression_overhead = match self.config().compression {
-                            bitfold_core::config::CompressionAlgorithm::Lz4 => 5,
+                            malnet_core::config::CompressionAlgorithm::Lz4 => 5,
                             _ => 1,
                         };
                         let checksum_overhead = if self.config().use_checksums { 4 } else { 0 };
@@ -156,14 +156,14 @@ impl Session for Peer {
                                 .saturating_sub(send_unsequenced_header),
                         );
 
-                        let base = bitfold_core::shared::SharedBytes::from_arc(event.payload_arc());
+                        let base = malnet_core::shared::SharedBytes::from_arc(event.payload_arc());
                         let mut offset = 0usize;
                         while offset < base.len() {
                             let len = std::cmp::min(max_payload_unseq, base.len() - offset);
                             let chunk = base.slice(offset, len);
                             let unsequenced_group = self.next_unsequenced_group();
                             self.enqueue_command(
-                                bitfold_protocol::command::ProtocolCommand::SendUnsequenced {
+                                malnet_protocol::command::ProtocolCommand::SendUnsequenced {
                                     channel_id,
                                     unsequenced_group,
                                     data: chunk,
@@ -254,7 +254,7 @@ impl Session for Peer {
 mod tests {
     use std::time::{Duration, Instant};
 
-    use bitfold_protocol::{command::ProtocolCommand, command_codec::CommandDecoder};
+    use malnet_protocol::{command::ProtocolCommand, command_codec::CommandDecoder};
 
     use super::*;
     use crate::session::Session;
@@ -275,7 +275,7 @@ mod tests {
 
     #[test]
     fn heartbeat_not_sent_when_recent_inbound() {
-        let mut cfg = bitfold_core::config::Config::default();
+        let mut cfg = malnet_core::config::Config::default();
         cfg.heartbeat_interval = Some(Duration::from_millis(50));
         let start = Instant::now();
 
@@ -298,7 +298,7 @@ mod tests {
 
     #[test]
     fn heartbeat_sent_when_bi_idle() {
-        let mut cfg = bitfold_core::config::Config::default();
+        let mut cfg = malnet_core::config::Config::default();
         cfg.heartbeat_interval = Some(Duration::from_millis(50));
         cfg.use_checksums = false; // Disable checksums for this test to isolate heartbeat behavior
         cfg.use_connection_handshake = false; // Disable handshake for this test to isolate heartbeat behavior
@@ -325,7 +325,7 @@ mod tests {
     fn incoming_bandwidth_limit_drops_excess_packets() {
         // Build a small encoded packet from a client peer
         let start = Instant::now();
-        let client_cfg = bitfold_core::config::Config::default();
+        let client_cfg = malnet_core::config::Config::default();
         let addr = "127.0.0.1:0".parse().unwrap();
         let mut client = Peer::new(addr, &client_cfg, start);
 
@@ -334,7 +334,7 @@ mod tests {
         let encoded = client.encode_queued_commands().unwrap();
 
         // Configure server peer with incoming limit equal to one packet size
-        let mut server_cfg = bitfold_core::config::Config::default();
+        let mut server_cfg = malnet_core::config::Config::default();
         server_cfg.incoming_bandwidth_limit = encoded.len() as u32; // allow exactly one
         let mut server = Peer::new(addr, &server_cfg, start);
 

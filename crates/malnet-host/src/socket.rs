@@ -6,11 +6,11 @@ use std::{
     time::{Duration, Instant},
 };
 
-use bitfold_core::{
+use malnet_core::{
     config::Config, error::Result, interceptor::Interceptor, transport::Socket as TransportSocket,
 };
-use bitfold_peer::Peer;
-use bitfold_protocol::packet::{DeliveryGuarantee, OrderingGuarantee, Packet};
+use malnet_peer::Peer;
+use malnet_protocol::packet::{DeliveryGuarantee, OrderingGuarantee, Packet};
 use crossbeam_channel::{Receiver, Sender, TryRecvError};
 use socket2::Socket as Socket2;
 
@@ -156,8 +156,8 @@ impl Host {
     ///
     /// # Examples
     /// ```no_run
-    /// use bitfold_host::Host;
-    /// use bitfold_core::{config::Config, interceptor::Interceptor};
+    /// use malnet_host::Host;
+    /// use malnet_core::{config::Config, interceptor::Interceptor};
     /// use std::net::SocketAddr;
     ///
     /// struct LoggingInterceptor;
@@ -586,7 +586,7 @@ mod tests {
 
     use std::sync::{Arc, Mutex};
 
-    use bitfold_core::interceptor::Interceptor;
+    use malnet_core::interceptor::Interceptor;
 
     #[derive(Clone)]
     struct CountingInterceptor {

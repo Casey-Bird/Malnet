@@ -1,6 +1,6 @@
 [package]
-name = "bitfold"
-description = "A modern, high-performance reliable UDP networking library inspired by ENet, built with Rust"
+name = "malnet"
+description = "A modern, high-performance reliable UDP networking library inspired by ENet & Bitfold, built with Rust."
 keywords = ["networking", "udp", "enet", "reliable-udp", "game-networking"]
 categories = ["network-programming", "game-development", "asynchronous"]
 readme = "../../README.md"
@@ -16,10 +16,10 @@ repository.workspace = true
 doctest = false
 
 [dependencies]
-bitfold-core = { workspace = true }
-bitfold-protocol = { workspace = true }
-bitfold-peer = { workspace = true }
-bitfold-host = { workspace = true }
+malnet-core = { workspace = true }
+malnet-protocol = { workspace = true }
+malnet-peer = { workspace = true }
+malnet-host = { workspace = true }
 
 [dev-dependencies]
 quickcheck = { workspace = true }

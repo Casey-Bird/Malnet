@@ -1,11 +1,11 @@
-//! Integration tests for the bitfold-peer crate.
+//! Integration tests for the malnet-peer crate.
 //!
 //! These tests verify the complete behavior of the Peer struct and how
 //! multiple systems interact together.
 
 use std::time::Instant;
 
-use bitfold::{
+use malnet::{
     core::config::{CompressionAlgorithm, Config},
     peer::Peer,
     protocol::{command::ProtocolCommand, packet::OrderingGuarantee},

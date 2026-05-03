@@ -13,7 +13,7 @@ use std::net::SocketAddr;
 /// # Examples
 /// ```
 /// use std::net::SocketAddr;
-/// use bitfold_core::interceptor::Interceptor;
+/// use malnet_core::interceptor::Interceptor;
 ///
 /// struct LoggingInterceptor;
 ///

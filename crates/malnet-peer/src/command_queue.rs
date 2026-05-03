@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use bitfold_protocol::command::ProtocolCommand;
+use malnet_protocol::command::ProtocolCommand;
 
 /// Command queue for batching protocol commands before transmission.
 /// Commands are aggregated into larger packets to improve bandwidth utilization.

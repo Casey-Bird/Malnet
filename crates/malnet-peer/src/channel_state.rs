@@ -11,7 +11,7 @@
 
 use std::collections::HashMap;
 
-use bitfold_core::shared::SharedBytes;
+use malnet_core::shared::SharedBytes;
 
 /// Tracks per-channel ordering state.
 #[derive(Debug)]

@@ -39,47 +39,47 @@ Bitfold is a reliable UDP networking library inspired by ENet. These guidelines 
 Bitfold uses a workspace architecture with separate crates for modularity:
 
 ```text
-bitfold-core      → Core types, configuration, and utilities
-bitfold-protocol  → Pure protocol logic (no I/O)
-bitfold-peer      → Per-peer state machine, command batching
-bitfold-host      → I/O, socket operations, session management
-bitfold           → Main library (re-exports all public APIs)
+malnet-core      → Core types, configuration, and utilities
+malnet-protocol  → Pure protocol logic (no I/O)
+malnet-peer      → Per-peer state machine, command batching
+malnet-host      → I/O, socket operations, session management
+malnet           → Main library (re-exports all public APIs)
 ```
 
 **Key principles:**
 
 - **Protocol layer is pure** - No side effects, no I/O, fully testable
 - **Clear boundaries** - Each crate has well-defined responsibilities
-- **Dependency direction** - Always depend downward (bitfold → host → peer → protocol → core)
+- **Dependency direction** - Always depend downward (malnet → host → peer → protocol → core)
 - **Workspace versioning** - All crates share version and package metadata
 
 ### Crate Organization
 
-**bitfold-core:**
+**malnet-core:**
 - Configuration types
 - Error definitions
 - Shared utilities
 - Address resolution
 
-**bitfold-protocol:**
+**malnet-protocol:**
 - Packet encoding/decoding
 - Command types (ACK, Ping, Send, etc.)
 - Fragmentation logic
 - Compression support
 
-**bitfold-peer:**
+**malnet-peer:**
 - Peer state machine
 - Acknowledgment tracking
 - Congestion control
 - Command batching
 
-**bitfold-host:**
+**malnet-host:**
 - Socket I/O operations
 - Session management
 - Event dispatching
 - Connection lifecycle
 
-**bitfold:**
+**malnet:**
 - Public API surface
 - Re-exports from workspace crates
 - Documentation and examples
@@ -457,19 +457,19 @@ let count = count_usize as u8;
 ```text
 Cargo.toml                    - Workspace definition
 crates/
-  bitfold-core/
+  malnet-core/
     src/lib.rs                - Core types and utilities
     Cargo.toml
-  bitfold-protocol/
+  malnet-protocol/
     src/lib.rs                - Protocol logic (pure, no I/O)
     Cargo.toml
-  bitfold-peer/
+  malnet-peer/
     src/lib.rs                - Peer state management
     Cargo.toml
-  bitfold-host/
+  malnet-host/
     src/lib.rs                - I/O layer and session management
     Cargo.toml
-  bitfold/
+  malnet/
     src/lib.rs                - Public API re-exports
     Cargo.toml
 examples/

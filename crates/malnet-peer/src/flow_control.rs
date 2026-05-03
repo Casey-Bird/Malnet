@@ -28,8 +28,8 @@
 //! # Example
 //!
 //! ```
-//! use bitfold_peer::flow_control::FlowControl;
-//! use bitfold_core::config::Config;
+//! use malnet_peer::flow_control::FlowControl;
+//! use malnet_core::config::Config;
 //!
 //! let config = Config::default();
 //! let mut flow_control = FlowControl::new(&config);
@@ -49,7 +49,7 @@
 //! flow_control.adjust_window_size(&config, loss_rate, rtt_ms);
 //! ```
 
-use bitfold_core::config::Config;
+use malnet_core::config::Config;
 
 /// Window-based flow control state for managing reliable data transmission.
 ///
@@ -73,8 +73,8 @@ impl FlowControl {
     /// # Example
     ///
     /// ```
-    /// use bitfold_peer::flow_control::FlowControl;
-    /// use bitfold_core::config::Config;
+    /// use malnet_peer::flow_control::FlowControl;
+    /// use malnet_core::config::Config;
     ///
     /// let config = Config::default();
     /// let flow_control = FlowControl::new(&config);

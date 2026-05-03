@@ -1,6 +1,6 @@
 [package]
-name = "bitfold-peer"
-description = "Peer state machine for the Bitfold networking library"
+name = "malnet-core"
+description = "Core types, configuration, and utilities for the Bitfold networking library"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -10,10 +10,7 @@ homepage.workspace = true
 repository.workspace = true
 
 [dependencies]
-bitfold-core = { workspace = true }
-bitfold-protocol = { workspace = true }
-rand = { workspace = true }
-tracing = { workspace = true }
+dns-lookup = { workspace = true }
 
 [lints]
 workspace = true

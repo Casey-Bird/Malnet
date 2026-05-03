@@ -8,7 +8,7 @@
 
 use std::{collections::VecDeque, convert::TryFrom, net::SocketAddr, sync::Arc};
 
-use bitfold_core::{
+use malnet_core::{
     either::Either,
     error::{DecodingErrorKind, ErrorKind},
 };

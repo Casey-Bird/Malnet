@@ -4,7 +4,7 @@
 mod tests {
     use std::io::Cursor;
 
-    use bitfold_core::shared::SharedBytes;
+    use malnet_core::shared::SharedBytes;
 
     use super::super::{CommandDecoder, CommandEncoder};
     use crate::command::{CommandPacket, ProtocolCommand};

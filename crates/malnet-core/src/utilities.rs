@@ -21,7 +21,7 @@ use std::{
 ///
 /// # Examples
 /// ```no_run
-/// use bitfold_core::utilities::resolve_host;
+/// use malnet_core::utilities::resolve_host;
 ///
 /// let addr = resolve_host("localhost", 8080).unwrap();
 /// assert_eq!(addr.port(), 8080);
@@ -44,7 +44,7 @@ pub fn resolve_host(hostname: &str, port: u16) -> io::Result<SocketAddr> {
 ///
 /// # Examples
 /// ```no_run
-/// use bitfold_core::utilities::reverse_lookup;
+/// use malnet_core::utilities::reverse_lookup;
 /// use std::net::{IpAddr, Ipv4Addr};
 ///
 /// let ip = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
@@ -68,7 +68,7 @@ pub fn reverse_lookup(addr: &IpAddr) -> io::Result<String> {
 ///
 /// # Examples
 /// ```
-/// use bitfold_core::utilities::parse_ip;
+/// use malnet_core::utilities::parse_ip;
 ///
 /// let addr = parse_ip("127.0.0.1", 8080).unwrap();
 /// assert_eq!(addr.port(), 8080);
@@ -91,7 +91,7 @@ pub fn parse_ip(ip_str: &str, port: u16) -> io::Result<SocketAddr> {
 ///
 /// # Examples
 /// ```
-/// use bitfold_core::utilities::format_ip;
+/// use malnet_core::utilities::format_ip;
 /// use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 ///
 /// let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
@@ -114,7 +114,7 @@ pub fn format_ip(addr: &SocketAddr) -> String {
 ///
 /// # Examples
 /// ```
-/// use bitfold_core::utilities::format_ip_addr;
+/// use malnet_core::utilities::format_ip_addr;
 /// use std::net::{IpAddr, Ipv4Addr};
 ///
 /// let ip = IpAddr::V4(Ipv4Addr::new(192, 168, 1, 1));

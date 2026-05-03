@@ -10,9 +10,9 @@
 //! - Network utilities (DNS resolution, IP parsing/formatting)
 //!
 //! Protocol-specific logic is in other modules:
-//! - `bitfold-protocol`: command codec, congestion control, bandwidth management, channels
-//! - `bitfold-peer`: command queue for session batching
-//! - `bitfold-host`: connection management, throughput monitoring
+//! - `malnet-protocol`: command codec, congestion control, bandwidth management, channels
+//! - `malnet-peer`: command queue for session batching
+//! - `malnet-host`: connection management, throughput monitoring
 
 /// Protocol constants shared across layers.
 pub mod constants {

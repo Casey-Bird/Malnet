@@ -1,7 +1,7 @@
 use std::{collections::VecDeque, time::Instant};
 
-use bitfold_core::error::{ErrorKind, Result};
-use bitfold_protocol::{
+use malnet_core::error::{ErrorKind, Result};
+use malnet_protocol::{
     command::ProtocolCommand,
     command_codec::CommandDecoder,
     packet::{DeliveryGuarantee, IncomingPackets, OrderingGuarantee, Packet, PacketType},
@@ -98,7 +98,7 @@ impl Peer {
 
                     let ordered_packets = channel_state.process_ordered(
                         *sequence,
-                        bitfold_core::shared::SharedBytes::from_arc(
+                        malnet_core::shared::SharedBytes::from_arc(
                             data.clone().into_full_arc().unwrap_or_else(|| {
                                 std::sync::Arc::<[u8]>::from(
                                     data.as_slice().to_vec().into_boxed_slice(),
@@ -174,7 +174,7 @@ impl Peer {
                 // Apply per-channel sequencing (drops old packets)
                 if let Some(packet_data) = channel_state.process_sequenced(
                     *sequence,
-                    bitfold_core::shared::SharedBytes::from_arc(
+                    malnet_core::shared::SharedBytes::from_arc(
                         data.clone().into_full_arc().unwrap_or_else(|| {
                             std::sync::Arc::<[u8]>::from(
                                 data.as_slice().to_vec().into_boxed_slice(),
@@ -274,7 +274,7 @@ impl Peer {
 
                                 let ready_packets = channel_state.process_ordered(
                                     *sequence,
-                                    bitfold_core::shared::SharedBytes::from_vec(reassembled),
+                                    malnet_core::shared::SharedBytes::from_vec(reassembled),
                                 );
                                 if ready_packets.is_empty() {
                                     return Ok(IncomingPackets::zero());
@@ -515,8 +515,8 @@ impl Peer {
 
 #[cfg(test)]
 mod tests {
-    use bitfold_core::config::Config;
-    use bitfold_protocol::command::ProtocolCommand;
+    use malnet_core::config::Config;
+    use malnet_protocol::command::ProtocolCommand;
 
     use super::*;
 

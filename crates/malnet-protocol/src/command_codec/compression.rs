@@ -2,7 +2,7 @@
 
 use std::io::{self, Read, Write};
 
-use bitfold_core::config::CompressionAlgorithm;
+use malnet_core::config::CompressionAlgorithm;
 use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
 
 /// Compresses data using the specified algorithm.

@@ -54,8 +54,8 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
-      - name: Publish bitfold-protocol
-        run: cargo publish -p bitfold-protocol --locked
+      - name: Publish malnet-protocol
+        run: cargo publish -p malnet-protocol --locked
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 

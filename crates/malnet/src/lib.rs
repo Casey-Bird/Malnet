@@ -11,7 +11,7 @@
 //!
 //! Example
 //! ```ignore
-//! use bitfold::{Host, SocketEvent, Packet, DeliveryGuarantee, OrderingGuarantee};
+//! use malnet::{Host, SocketEvent, Packet, DeliveryGuarantee, OrderingGuarantee};
 //!
 //! let mut host = Host::bind_any().unwrap();
 //! let remote = host.local_addr().unwrap();
@@ -30,17 +30,17 @@
 //! ```
 
 // Re-export all workspace crates
-pub use bitfold_core as core;
+pub use malnet_core as core;
 // Core config
-pub use bitfold_core::config::{CompressionAlgorithm, Config};
-pub use bitfold_core::utilities;
-pub use bitfold_host as host;
+pub use malnet_core::config::{CompressionAlgorithm, Config};
+pub use malnet_core::utilities;
+pub use malnet_host as host;
 // Host: manages multiple peer sessions and events
-pub use bitfold_host::{Host, SocketEvent};
-pub use bitfold_peer as peer;
-pub use bitfold_protocol as protocol;
+pub use malnet_host::{Host, SocketEvent};
+pub use malnet_peer as peer;
+pub use malnet_protocol as protocol;
 // Protocol: packets and guarantees
-pub use bitfold_protocol::{DeliveryGuarantee, OrderingGuarantee, Packet, PacketInfo, PacketType};
+pub use malnet_protocol::{DeliveryGuarantee, OrderingGuarantee, Packet, PacketInfo, PacketType};
 
 /// Convenience prelude with the most commonly used items.
 pub mod prelude {
