@@ -9,7 +9,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.21"
+version = "0.0.22"
 authors = ["Casey Bird"]
 edition = "2021"
 rust-version = "1.90.0"
@@ -19,10 +19,10 @@ repository = "https://github.com/russellwmy/malnet"
 
 [workspace.dependencies]
 # Workspace crates
-malnet-core = { path = "crates/malnet-core", version = "0.0.21" }
-malnet-protocol = { path = "crates/malnet-protocol", version = "0.0.21" }
-malnet-peer = { path = "crates/malnet-peer", version = "0.0.21" }
-malnet-host = { path = "crates/malnet-host", version = "0.0.21" }
+malnet-core = { path = "crates/malnet-core", version = "0.0.22" }
+malnet-protocol = { path = "crates/malnet-protocol", version = "0.0.22" }
+malnet-peer = { path = "crates/malnet-peer", version = "0.0.22" }
+malnet-host = { path = "crates/malnet-host", version = "0.0.22" }
 
 # External dependencies
 byteorder = "1.5.0"
