@@ -9,7 +9,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Casey Bird"]
 edition = "2021"
 rust-version = "1.90.0"
@@ -34,6 +34,8 @@ tracing = "0.1.43"
 crossbeam-channel = "0.5.15"
 socket2 = "0.6.1"
 dns-lookup = "3.0.1"
+x25519-dalek = { version = "0.3.0", features = ["getrandom"] }   # X25519 Diffie-Hellman # cryptographically secure RNG
+sha2 = "0.10"                   # SHA-256 for key derivation
 
 # Dev dependencies
 quickcheck = "1.0.3"

@@ -62,3 +62,5 @@ pub mod shared;
 pub mod transport;
 /// Utility functions for DNS resolution and IP operations.
 pub mod utilities;
+/// Sessions are an extra utility used for establishing fully encrypted packet transfers compatible with UDP
+mod session;
