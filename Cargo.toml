@@ -19,10 +19,10 @@ repository = "https://github.com/russellwmy/malnet"
 
 [workspace.dependencies]
 # Workspace crates
-malnet-core = { path = "crates/malnet-core", version = "0.0.1" }
-malnet-protocol = { path = "crates/malnet-protocol", version = "0.0.1" }
-malnet-peer = { path = "crates/malnet-peer", version = "0.0.1" }
-malnet-host = { path = "crates/malnet-host", version = "0.0.1" }
+malnet-core = { path = "crates/malnet-core", version = "0.0.2" }
+malnet-protocol = { path = "crates/malnet-protocol", version = "0.0.2" }
+malnet-peer = { path = "crates/malnet-peer", version = "0.0.2" }
+malnet-host = { path = "crates/malnet-host", version = "0.0.2" }
 
 # External dependencies
 byteorder = "1.5.0"
