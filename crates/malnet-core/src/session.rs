@@ -53,9 +53,9 @@ impl Session {
     /// Generates a new Session which contains the ephemeral secret and relative public key
     ///
     /// NOTE: The shared_secret AND master_key will NOT exist to begin with and will only be populated once the full Session process finishes
-    pub fn new() -> Self {
-        let _ephemeral_secret = Self::generate_ephemeral_secret();
-        let _public_key = Self::public_key_from_ephemeral_secret(&_ephemeral_secret);
+    pub fn new(&mut self) -> Self {
+        let _ephemeral_secret = self.generate_ephemeral_secret();
+        let _public_key = self.public_key_from_ephemeral_secret(&_ephemeral_secret);
 
         Self {
             ephemeral_secret: Some(_ephemeral_secret),
@@ -67,20 +67,21 @@ impl Session {
     }
 
     // TODO What is an Ephemeral secret and what is happening here?
-    pub fn generate_ephemeral_secret() -> EphemeralSecret {
+    pub fn generate_ephemeral_secret(&mut self) -> EphemeralSecret {
         let mut rng = rand::rng();          // ThreadRng – cryptographically secure
         EphemeralSecret::random_from_rng(&mut rng)
     }
 
 
     /// This does the X25519 scalar multiplication: public = secret * base point.
-    pub fn public_key_from_ephemeral_secret(secret: &EphemeralSecret) -> PublicKey {
+    pub fn public_key_from_ephemeral_secret(&mut self, secret: &EphemeralSecret) -> PublicKey {
         PublicKey::from(secret)
     }
 
     /// `secret` is consumed to ensure perfect forward secrecy.
     /// Returns the raw 32‑byte shared secret, which never touches the network.
     pub fn diffie_hellman(
+        &mut self,
         ephemeral_secret: EphemeralSecret,
         foreign_public_key: &PublicKey,
     ) -> [u8; 32] {
@@ -91,7 +92,7 @@ impl Session {
 
 
     /// Hashes the 32‑byte shared secret into a uniformly random 32‑byte key.
-    pub fn derive_master_key(shared_secret: &[u8; 32]) -> [u8; 32] {
+    pub fn derive_master_key(&mut self, shared_secret: &[u8; 32]) -> [u8; 32] {
         let mut hasher: Sha256 = Sha256::new();
         hasher.update(shared_secret);
         hasher.finalize().into()
@@ -100,7 +101,7 @@ impl Session {
 
     /// Encrypt plaintext using only the master key.
     /// Returns a self-contained packet: [12-byte random nonce][ciphertext+tag].
-    pub fn encrypt_packet(key: &[u8; 32], plaintext: &[u8]) -> Vec<u8> {
+    pub fn encrypt_packet(&mut self, key: &[u8; 32], plaintext: &[u8]) -> Vec<u8> {
         let cipher = ChaCha20Poly1305::new_from_slice(key).unwrap();
 
         // Random nonce – no counters, no coordination needed
@@ -118,7 +119,7 @@ impl Session {
 
     /// Decrypt a packet that was created by `encrypt_packet`.
     /// Only needs the symmetric key. Returns `Some(plaintext)` if valid, `None` if forged/corrupt.
-    pub fn decrypt_packet(key: &[u8; 32], packet: &[u8]) -> Option<Vec<u8>> {
+    pub fn decrypt_packet(&mut self, key: &[u8; 32], packet: &[u8]) -> Option<Vec<u8>> {
         if packet.len() < 28 { return None; } // 12 Nonce + 16 tag minimum
 
         let (nonce, ciphertext) = packet.split_at(12);
