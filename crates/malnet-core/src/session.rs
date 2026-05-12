@@ -12,6 +12,8 @@ use chacha20poly1305::{
 ///
 /// `@ephemeral_secret`: The secret key generated on the computer this session was created from
 /// `@public_key`: This key gets sent to the server to be used for computing the rest of the encryption logic
+/// 
+/// `@is_secure`: This is a flag that can be set to true when a successful session is established
 ///
 /// All sessions are created on the client side first and then requested to the server for processing
 ///
@@ -31,6 +33,7 @@ pub struct Session {
     pub public_key: Option<PublicKey>,
     pub shared_secret: Option<SharedSecret>,
     pub master_key: [u8; 32],
+    pub is_secure: bool,
 }
 
 
@@ -58,7 +61,8 @@ impl Session {
             ephemeral_secret: Some(_ephemeral_secret),
             public_key: Some(_public_key),
             shared_secret: None,
-            master_key: [0u8; 32]
+            master_key: [0u8; 32],
+            is_secure: false,
         }
     }
 
