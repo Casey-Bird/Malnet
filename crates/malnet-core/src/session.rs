@@ -53,9 +53,9 @@ impl Session {
     /// Generates a new Session which contains the ephemeral secret and relative public key
     ///
     /// NOTE: The shared_secret AND master_key will NOT exist to begin with and will only be populated once the full Session process finishes
-    pub fn new(&mut self) -> Self {
-        let _ephemeral_secret = self.generate_ephemeral_secret();
-        let _public_key = self.public_key_from_ephemeral_secret(&_ephemeral_secret);
+    pub fn new() -> Self {
+        let _ephemeral_secret = Self::generate_ephemeral_secret();
+        let _public_key = Self::public_key_from_ephemeral_secret(&_ephemeral_secret);
 
         Self {
             ephemeral_secret: Some(_ephemeral_secret),
@@ -67,14 +67,14 @@ impl Session {
     }
 
     // TODO What is an Ephemeral secret and what is happening here?
-    pub fn generate_ephemeral_secret(&mut self) -> EphemeralSecret {
+    pub fn generate_ephemeral_secret() -> EphemeralSecret {
         let mut rng = rand::rng();          // ThreadRng – cryptographically secure
         EphemeralSecret::random_from_rng(&mut rng)
     }
 
 
     /// This does the X25519 scalar multiplication: public = secret * base point.
-    pub fn public_key_from_ephemeral_secret(&mut self, secret: &EphemeralSecret) -> PublicKey {
+    pub fn public_key_from_ephemeral_secret(secret: &EphemeralSecret) -> PublicKey {
         PublicKey::from(secret)
     }
 
